@@ -4,9 +4,8 @@
 #include <mpi.h>
 #include <stdbool.h>
 
-#define SIZE 100000 // Using minimum requirement for faster testing
+#define SIZE 100000 
 
-// --- Utility Functions ---
 void generateArray(int arr[], int n) {
     for (int i = 0; i < n; i++) arr[i] = rand() % 100000;
 }
@@ -48,7 +47,6 @@ void mergeSortSeq(int arr[], int left, int right) {
     }
 }
 
-// --- Main MPI Program ---
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
 
@@ -56,7 +54,6 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    // Part 4 Requirement: Print Processor Name
     char processor_name[MPI_MAX_PROCESSOR_NAME];
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
@@ -72,20 +69,15 @@ int main(int argc, char** argv) {
         printf("\nGenerating array of %d elements...\n", SIZE);
     }
 
-    // Start timer on Process 0
     double start_time;
     if (rank == 0) start_time = MPI_Wtime();
 
-    // 1. Scatter the array to all processes
     MPI_Scatter(global_arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // 2. Each process sorts its own chunk
     mergeSortSeq(local_arr, 0, chunk_size - 1);
 
-    // 3. Gather the sorted chunks back to Process 0
     MPI_Gather(local_arr, chunk_size, MPI_INT, global_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // 4. Process 0 merges the final gathered chunks together
     if (rank == 0) {
         int *final_arr = (int *)malloc(SIZE * sizeof(int));
         for (int i = 0; i < chunk_size; i++) final_arr[i] = global_arr[i];

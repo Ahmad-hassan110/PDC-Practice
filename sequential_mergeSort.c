@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Merge function
 void merge(int arr[], int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -24,7 +23,6 @@ void merge(int arr[], int left, int mid, int right) {
     free(R);
 }
 
-// Recursive merge sort
 void mergeSort(int arr[], int left, int right){
     if(left < right){
         int mid = left + (right - left)/2;
@@ -34,7 +32,6 @@ void mergeSort(int arr[], int left, int right){
     }
 }
 
-// Check if array is sorted
 int isSorted(int arr[], int n){
     for(int i = 1; i < n; i++)
         if(arr[i-1] > arr[i]) return 0;
@@ -42,10 +39,9 @@ int isSorted(int arr[], int n){
 }
 
 int main() {
-    int n = 1000000; // 1 million elements
+    int n = 1000000; 
     int* arr = (int*)malloc(n * sizeof(int));
 
-    // Generate random integers
     srand(time(NULL));
     for(int i = 0; i < n; i++) arr[i] = rand();
 
